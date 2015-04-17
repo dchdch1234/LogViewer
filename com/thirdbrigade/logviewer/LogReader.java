@@ -9,8 +9,9 @@ import java.util.ArrayList;
 public class LogReader
 {
   private static final long serialVersionUID = 1L;
-  private static final String[] COLUMN_NAME= {"Time","Time (microseconds)","Computer","Reason","Tag(s)","Application Type","Action","Rank","Direction","Flow","Interface","Protocol","Flags","Source IP","Source MAC","Source Port","Destination IP","Destination MAC","Destination Port","Packet Size","Note","Repeat Count","End Time","Position In Buffer","Position In Stream","Data Flags","Data Index","Data"};
-  public void load(File f)
+  private static final String[] DPI_COLUMN_NAME= {"Time","Time (microseconds)","Computer","Reason","Tag(s)","Application Type","Action","Rank","Direction","Flow","Interface","Protocol","Flags","Source IP","Source MAC","Source Port","Destination IP","Destination MAC","Destination Port","Packet Size","Note","Repeat Count","End Time","Position In Buffer","Position In Stream","Data Flags","Data Index","Data"};
+  private static final String[] FW_COLUMN_NAME= {"Time","Time (microseconds)","Computer","Reason","Tag(s)","Action","Rank","Direction","Interface","Frame Type","Protocol","Flags","Source IP","Source MAC","Source Port","Destination IP","Destination MAC","Destination Port","Packet Size","Repeat Count","End Time","Flow","Status","Note","Data Flags","Data Index","Data"};
+  public void load(File f, int logtype)
   {
     LogViewer.logViewer.setCursor(Cursor.getPredefinedCursor(3));
     try
@@ -24,7 +25,13 @@ public class LogReader
       }
       LogViewer.logModel = new LogModel(LogViewer.logTable);
       LogViewer.logModel.setColumnCount(list.size());
-      
+      String[] COLUMN_NAME;
+      if ( logtype==0 ) {
+    	  COLUMN_NAME=DPI_COLUMN_NAME; 
+      }
+      else {
+    	  COLUMN_NAME=FW_COLUMN_NAME;
+      }
       for (int col = 0; col < list.size(); col++) {
     	  // Use EN column name
     	  if ( col < COLUMN_NAME.length )
@@ -33,7 +40,12 @@ public class LogReader
     		  LogViewer.logModel.setColumnName((String)list.get(col), col);
       }
       
-           
+      
+      String encoding = "UTF-8";
+      String test = (String)list.get(0);
+      if ( !test.equals("Time") ) {
+    	  encoding = getEncoding(test);
+      }
       int row = 0;
       for (;;)
       {
@@ -42,7 +54,7 @@ public class LogReader
           break;
         }
         for (int col = 0; col < list.size(); col++) {
-          LogViewer.logModel.setValueAt(list.get(col), row, col);
+          LogViewer.logModel.setValueAt(new String(list.get(col).getBytes(encoding), "UTF-8"), row, col);
         }
         row++;
       }
@@ -100,5 +112,30 @@ public class LogReader
     }
     return list;
 
+  }
+  
+  private String getEncoding(String str) {
+	  
+	  String encode = "Shift_JIS";  
+	  
+      try {  
+    	  String temp = new String(str.getBytes(encode), "UTF-8");
+          if (str.equals(temp)) {  
+              String s = encode;  
+              return s;  
+          }  
+      } catch (Exception exception) {  
+      }  
+	  encode = "GB2312";  
+      try {  
+          if (str.equals(new String(str.getBytes(encode), encode))) {  
+              String s = encode;  
+              return s;  
+          }  
+      } catch (Exception exception) {  
+      } 
+      
+      return null;
+      
   }
 }

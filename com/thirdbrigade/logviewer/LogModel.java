@@ -146,7 +146,7 @@ public class LogModel
   
   public void applyFilter()
   {
-    this.values = new ArrayList();
+    
     for (int row = 0; row < this.master.size(); row++)
     {
       Object[] log = (Object[])this.master.get(row);

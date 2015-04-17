@@ -7,17 +7,20 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
+import java.io.Console;
 import java.io.File;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 
 import javax.swing.ImageIcon;
+import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JViewport;
@@ -157,13 +160,7 @@ public class LogViewer
     {
       if (this.chooser.showOpenDialog(this) == 0)
       {
-        logDetail.setVisible(false);
-        logFile = this.chooser.getSelectedFile();
-        logReader.load(logFile);
-        logFilter.setVisible(true);
-        logFilter.init();
-        logFilter.reset();
-        logModel.applyFilter();
+        openFile(chooser.getSelectedFile());
       }
     }
     else if (cmd.equals("details")) {
@@ -172,6 +169,35 @@ public class LogViewer
       System.exit(0);
     }
   }
+  
+
+  
+  private void openFile(File f){
+	  
+	  int logtype = 2;  //, 0:dpi, 1:firewall , 2:unknown
+	  String filename = f.getName().toLowerCase();
+	  if (filename.contains("dpi")) {
+		  logtype = 0;
+	  } 
+	  else if ( filename.contains("firewall") ){
+		  logtype = 1;
+	  }
+	  
+	  if ( logtype == 2 ) {
+		  Object[] options = {"DPI event log","Firewall event log"};
+		  logtype = JOptionPane.showOptionDialog(this, "Please choose log type", "Log type", 0 ,JOptionPane.PLAIN_MESSAGE, null, options, options[0] );
+		  System.out.println(logtype);
+	  }
+		  
+	  logDetail.setVisible(false);
+      logFile = f;
+      logReader.load(logFile, logtype);
+      logFilter.setVisible(true);
+      logFilter.init();
+      logFilter.reset();
+      logModel.applyFilter();
+  }
+
   
   public void menuDeselected(MenuEvent e) {}
   
@@ -190,6 +216,7 @@ public class LogViewer
     }
   }
   
+  
   public static void main(String[] args)
   {
     LogViewer viewer = new LogViewer();
@@ -199,24 +226,7 @@ public class LogViewer
 @Override
 public void dragEnter(DropTargetDragEvent dtde) {
 	// TODO Auto-generated method stub
-	 try {    
-         Transferable tr = dtde.getTransferable();    
-         Object obj = tr.getTransferData(DataFlavor.javaFileListFlavor);    
-         @SuppressWarnings("unchecked")
-		 List<File> files = (List<File>)obj;    
-         logFile =files.get(0);
-         logDetail.setVisible(false);
-         logReader.load( logFile );
-         logFilter.setVisible(true);
-         logFilter.init();
-         logFilter.reset();
-         logModel.applyFilter();
-         
-     } catch (UnsupportedFlavorException ex) {    
-
-     } catch (IOException ex) {    
-
-     }  
+	 
 }
 
 @Override
@@ -234,6 +244,21 @@ public void dragOver(DropTargetDragEvent dtde) {
 @Override
 public void drop(DropTargetDropEvent dtde) {
 	// TODO Auto-generated method stub
+		dtde.acceptDrop(DnDConstants.ACTION_REFERENCE);
+		if (dtde.isDataFlavorSupported(DataFlavor.javaFileListFlavor)) {
+			try {
+				Transferable tr = dtde.getTransferable();
+				Object obj = tr.getTransferData(DataFlavor.javaFileListFlavor);
+				@SuppressWarnings("unchecked")
+				List<File> files = (List<File>) obj;
+				openFile(files.get(0));
+
+			} catch (UnsupportedFlavorException ex) {
+
+			} catch (IOException ex) {
+
+			}
+		}
 
   
 }
