@@ -174,19 +174,22 @@ public class LogViewer
   
   private void openFile(File f){
 	  
-	  int logtype = 2;  //, 0:dpi, 1:firewall , 2:unknown
+	  int logtype = -1;  //-1:unknown, 0:dpi, 1:firewall
 	  String filename = f.getName().toLowerCase();
-	  if (filename.contains("dpi")) {
+	  if (filename.contains("dpievent")) {
 		  logtype = 0;
 	  } 
-	  else if ( filename.contains("firewall") ){
+	  else if ( filename.contains("firewallevent") ){
 		  logtype = 1;
 	  }
 	  
-	  if ( logtype == 2 ) {
+	  else if ( filename.contains("hostevent") ){
+		  logtype = 2;
+	  }
+	  
+	  if ( logtype == -1 ) {
 		  Object[] options = {"DPI event log","Firewall event log"};
 		  logtype = JOptionPane.showOptionDialog(this, "Please choose log type", "Log type", 0 ,JOptionPane.PLAIN_MESSAGE, null, options, options[0] );
-		  System.out.println(logtype);
 	  }
 		  
 	  logDetail.setVisible(false);

@@ -528,7 +528,7 @@ public class LogFilter
           }
         } else if ( s1.indexOf('-') > 0) {
         	try {
-				this.fileMinDate = chineseFormat.parse(s1);
+				this.fileMaxDate = chineseFormat.parse(s1);
 			} catch (ParseException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
