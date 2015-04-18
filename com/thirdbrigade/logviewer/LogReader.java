@@ -93,41 +93,41 @@ public class LogReader {
 	}
 
 	private ArrayList<String> readLine(BufferedReader rdr) throws Exception {
-	    String str;
-	    do
-	    {
-	      str = rdr.readLine();
-	      if (str == null) {
-	        return null;
-	      }
-	    } while ((str.length() < 1) || 
-	      (str.indexOf(",") < 0));
-	    //System.out.println(str);
-	    String[] array = str.split(",");
-	    
-	    ArrayList<String> list = new ArrayList();
-	    for (int i = 0; i < array.length; i++)
-	    {
-	      String s = array[i];
-	      if (s.startsWith("\""))
-	      {
-	        String tmp = s;
-	        while ((!s.endsWith("\"")) && (i < array.length))
-	        {
-	          s = array[(++i)];
-	          tmp = tmp + ", " + s;
-	        }
-	        s = tmp;
-	        if (s.length() > 1) {
-	          s = s.substring(1);
-	        }
-	        if (s.endsWith("\"")) {
-	          s = s.substring(0, s.length() - 1);
-	        }
-	      }
-	      list.add(s.trim());
-	    }
-	    return list;
+		String str;
+		ArrayList<String> list = new ArrayList<String>();
+
+		if ((str = rdr.readLine()) == null) {
+			return null;
+		}
+		// System.out.println(str);
+		String[] array = str.split(",");
+
+		for (int i = 0; i < array.length; i++) {
+			String s = array[i];
+			if (s.startsWith("\"")) {
+				String tmp = s;
+				while ((!s.endsWith("\"")) && (i < array.length - 1)) {
+					s = array[(++i)];
+					tmp = tmp + ", " + s;
+				}
+				s = tmp;
+				if (i == array.length - 1) { // Not found " in the current line
+					while (!s.endsWith("\"")) {
+						s += ("\n" + rdr.readLine());
+					}
+				}
+				if (s.length() > 1) {
+					s = s.substring(1);
+				}
+				if (s.endsWith("\"")) {
+					s = s.substring(0, s.length() - 1);
+				}
+			}
+			list.add(s.trim());
+		}
+
+		System.out.println(list.toString());
+		return list;
 
 	}
 

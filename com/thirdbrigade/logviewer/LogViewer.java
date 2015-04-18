@@ -130,9 +130,7 @@ public class LogViewer
     this.chooser = new JFileChooser();
     this.chooser.setDialogTitle("Select Log File");
     this.chooser.setFileFilter(new LogFileFilter());
-    this.chooser.setCurrentDirectory(new File("."));
-    
-    logDetail = new LogDetail();
+    this.chooser.setCurrentDirectory(new File("."));      
     
     setSize(1000, 800);
     validate();
@@ -188,17 +186,19 @@ public class LogViewer
 	  }
 	  
 	  if ( logtype == -1 ) {
-		  Object[] options = {"DPI event log","Firewall event log"};
+		  Object[] options = {"DPI event","Firewall event", "Host event"};
 		  logtype = JOptionPane.showOptionDialog(this, "Please choose log type", "Log type", 0 ,JOptionPane.PLAIN_MESSAGE, null, options, options[0] );
 	  }
 		  
-	  logDetail.setVisible(false);
+	  
       logFile = f;
       logReader.load(logFile, logtype);
       logFilter.setVisible(true);
       logFilter.init();
       logFilter.reset();
       logModel.applyFilter();
+      logDetail = new LogDetail(logtype);
+      logDetail.setVisible(false);
   }
 
   
