@@ -104,7 +104,7 @@ public class LogDetail extends JDialog implements ActionListener {
 			setLayout(new GridLayout(1, 1));
 			setMinimumSize(new Dimension(750, 200));
 			setMaximumSize(new Dimension(750, 200));
-			setPreferredSize(new Dimension(750, 200));
+			setPreferredSize(new Dimension(750, 300));
 
 			this.textPane = new JTextPane();
 			this.textPane.setEditable(false);

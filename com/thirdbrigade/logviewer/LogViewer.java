@@ -186,7 +186,7 @@ public class LogViewer
 	  }
 	  
 	  if ( logtype == -1 ) {
-		  Object[] options = {"DPI event","Firewall event", "Host event"};
+		  Object[] options = {"DPI event","Firewall event", "Host event", "Other"};
 		  logtype = JOptionPane.showOptionDialog(this, "Please choose log type", "Log type", 0 ,JOptionPane.PLAIN_MESSAGE, null, options, options[0] );
 	  }
 		  

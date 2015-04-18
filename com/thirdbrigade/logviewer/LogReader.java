@@ -45,7 +45,7 @@ public class LogReader {
 			}
 			LogViewer.logModel = new LogModel(LogViewer.logTable);
 			LogViewer.logModel.setColumnCount(list.size());
-			String[] COLUMN_NAME = {};
+			String[] COLUMN_NAME = list.toArray(new String[0]);
 			switch (logtype){
 				case 0:
 					COLUMN_NAME=DPI_COLUMN_NAME;
@@ -56,7 +56,7 @@ public class LogReader {
 				case 2:
 					COLUMN_NAME=HOST_COLUMN_NAME;
 					break;
-				default:					
+				default:
 					break;
 			}
 			
